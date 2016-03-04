@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		097DD47E60997B36AB59CDBB /* Pods_Awesome_Weather_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0D3A759C9544FA4E76AA7 /* Pods_Awesome_Weather_App.framework */; };
 		C2364CA71C898EFE006C67CE /* WeatherOverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2364CA61C898EFE006C67CE /* WeatherOverviewCell.swift */; };
+		C2364CA91C89E397006C67CE /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2364CA81C89E397006C67CE /* DetailViewController.swift */; };
 		C2C5FE2B1C886BF400667D3E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */; };
 		C2C5FE301C886BF400667D3E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2C5FE2E1C886BF400667D3E /* Main.storyboard */; };
 		C2C5FE321C886BF500667D3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2C5FE311C886BF500667D3E /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		71E0D3A759C9544FA4E76AA7 /* Pods_Awesome_Weather_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awesome_Weather_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BF0A23788146ADDE100D932 /* Pods-Awesome Weather App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awesome Weather App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Awesome Weather App/Pods-Awesome Weather App.debug.xcconfig"; sourceTree = "<group>"; };
 		C2364CA61C898EFE006C67CE /* WeatherOverviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherOverviewCell.swift; sourceTree = "<group>"; };
+		C2364CA81C89E397006C67CE /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		C2C5FE271C886BF400667D3E /* Awesome Weather App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awesome Weather App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2C5FE2F1C886BF400667D3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			children = (
 				C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */,
 				C2C5FE2E1C886BF400667D3E /* Main.storyboard */,
+				C2364CA81C89E397006C67CE /* DetailViewController.swift */,
 				C2C5FE3C1C88774400667D3E /* MasterViewController.swift */,
 				C2C5FE311C886BF500667D3E /* Assets.xcassets */,
 				C2C5FE331C886BF500667D3E /* LaunchScreen.storyboard */,
@@ -221,6 +224,7 @@
 				C2364CA71C898EFE006C67CE /* WeatherOverviewCell.swift in Sources */,
 				C2C5FE2B1C886BF400667D3E /* AppDelegate.swift in Sources */,
 				C2C5FE3D1C88774400667D3E /* MasterViewController.swift in Sources */,
+				C2364CA91C89E397006C67CE /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

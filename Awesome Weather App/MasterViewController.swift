@@ -72,6 +72,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                 
             case .Failure(let error):
                 print("Request failed with error: \(error)")
+                //probably retry or sth.
             }
         }
 
@@ -112,6 +113,25 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     {
         self.locationManager.startUpdatingLocation()
         
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "detailSegue" {
+            let cell = sender as? UITableViewCell
+            let indexPath = overViewTable.indexPathForCell(cell!)
+            let cityObject = locationArray.objectAtIndex(indexPath!.row) as! NSDictionary
+            
+            let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
+            
+            let detailVC = navController.viewControllers[0] as! DetailViewController
+            detailVC.cityObject = cityObject 
+            
+            
+            
+            //player = Player(name: nameTextField.text!, game: "Chess", rating: 1)
+        }
+    }
+    @IBAction func backToOverview(segue:UIStoryboardSegue) {
     }
 
 }
