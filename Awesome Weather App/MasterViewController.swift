@@ -172,9 +172,9 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
             let indexPath = overViewTable.indexPathForCell(cell!)
             let cityObject = self.cities[indexPath!.row]
             
-            let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
+            //let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
             
-            let detailVC = navController.viewControllers[0] as! DetailViewController
+            let detailVC = segue.destinationViewController as! DetailViewController
             detailVC.cityObject = cityObject 
             
             

@@ -24,22 +24,6 @@
             </objects>
             <point key="canvasLocation" x="-1037" y="131"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="RQZ-N9-9Qe">
-            <objects>
-                <navigationController id="iTf-EY-0b3" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="NLf-HC-7ys">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="qrk-mb-9aQ" kind="relationship" relationship="rootViewController" id="iSY-pB-gxa"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aPb-2c-I91" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="992" y="1061"/>
-        </scene>
         <!--Master View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -111,7 +95,7 @@
                                             <outlet property="dateLabel" destination="zAf-hA-JWd" id="TAl-lS-Nvc"/>
                                             <outlet property="humidityLabel" destination="fSI-1K-YbI" id="zhb-VW-Hjw"/>
                                             <outlet property="temperatureLabel" destination="MSb-a6-Xy2" id="YHj-i5-XHa"/>
-                                            <segue destination="iTf-EY-0b3" kind="presentation" identifier="detailSegue" id="4aB-cQ-MWP"/>
+                                            <segue destination="qrk-mb-9aQ" kind="show" identifier="detailSegue" id="sMc-eU-nOp"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -733,13 +717,7 @@
                             <constraint firstItem="cQ8-qj-NNB" firstAttribute="top" secondItem="2IT-rb-aRq" secondAttribute="bottom" constant="41" id="ofz-G6-t9j"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="EaZ-D5-JDd">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="y67-zI-3VK">
-                            <connections>
-                                <segue destination="FH6-Ua-T4z" kind="unwind" unwindAction="backToOverview:" id="8NO-HU-01s"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Title" id="EaZ-D5-JDd"/>
                     <connections>
                         <outlet property="cloudinessLabel" destination="Wmq-s7-WQY" id="W0e-6S-M4c"/>
                         <outlet property="humidityLabel" destination="iou-k3-htd" id="95t-NX-TK5"/>
@@ -751,9 +729,8 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NNT-og-Pdp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="FH6-Ua-T4z" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2265" y="385"/>
+            <point key="canvasLocation" x="1131" y="374"/>
         </scene>
     </scenes>
 </document>
