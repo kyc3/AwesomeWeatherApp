@@ -11,13 +11,16 @@ import Alamofire
 import CoreLocation
 import MapKit
 
-class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate  {
+class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate, UIPickerViewDataSource,UIPickerViewDelegate {
 
+    @IBOutlet weak var radiusButton: UIBarButtonItem!
     @IBOutlet weak var overViewTable: UITableView!
     var locationManager:CLLocationManager!
     //var locationArray = []
     var refreshControl: UIRefreshControl!
     var cities: [City] = [City]()
+    let radiusOptions: [Int] = [1,2,3,4,5,6,7,8]
+    var radius:Int = 4
 
     
     override func viewDidLoad() {
@@ -55,7 +58,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     func getWeatherDataToLocation(lat: Double, lon: Double) {
         var url: String
-        url = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=4&units=metric&appid=44db6a862fba0b067b1930da0d769e98"
+        url = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=\(self.radius)&units=metric&appid=44db6a862fba0b067b1930da0d769e98"
         Alamofire.request(.GET, url).responseJSON() {
             response in switch response.result {
             case .Success(let JSON):
@@ -182,7 +185,32 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
             //player = Player(name: nameTextField.text!, game: "Chess", rating: 1)
         }
     }
-    @IBAction func backToOverview(segue:UIStoryboardSegue) {
+    
+    @IBAction func chooseRadius(sender: AnyObject) {
+        let pickerFrame = CGRectMake(0, (self.view.frame.height/3) * 2, self.view.frame.width, (self.view.frame.height/3))
+        
+        let picker = UIPickerView(frame: pickerFrame)
+        picker.delegate = self
+        picker.dataSource = self
+        picker.backgroundColor = UIColor.grayColor()
+        self.view.addSubview(picker)
+        picker.selectRow(radiusOptions.indexOf(radius)!, inComponent: 0, animated: false)
     }
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return radiusOptions.count
+    }
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return "\(self.radiusOptions[row])"
+    }
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.radius = radiusOptions[row]
+        self.locationManager.startUpdatingLocation()
+        radiusButton.title = "Radius (\(radius))"
+        pickerView.removeFromSuperview()
+    }
+    
 
 }

@@ -113,9 +113,16 @@
                             <constraint firstItem="GH2-O5-hy1" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="aKG-bL-d1M"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="5EV-MR-8tH"/>
+                    <navigationItem key="navigationItem" id="5EV-MR-8tH">
+                        <barButtonItem key="rightBarButtonItem" title="Radius (4)" id="6q6-lo-guM">
+                            <connections>
+                                <action selector="chooseRadius:" destination="BYZ-38-t0r" id="PQd-LF-P8V"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="overViewTable" destination="GH2-O5-hy1" id="YYP-da-dFo"/>
+                        <outlet property="radiusButton" destination="6q6-lo-guM" id="cnA-sK-zhd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
