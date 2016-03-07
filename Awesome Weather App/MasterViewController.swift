@@ -15,8 +15,9 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
 
     @IBOutlet weak var overViewTable: UITableView!
     var locationManager:CLLocationManager!
-    var locationArray = []
+    //var locationArray = []
     var refreshControl: UIRefreshControl!
+    var cities: [City] = [City]()
 
     
     override func viewDidLoad() {
@@ -62,7 +63,48 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                 let response = JSON as! NSDictionary
                 
                 if (response.valueForKey("list") != nil) {
-                    self.locationArray = response.valueForKey("list")! as! NSArray
+                    print("succesfully got new data")
+                    self.cities.removeAll()
+                    let locationArray = response.valueForKey("list")! as! NSArray
+                    
+                    for location in locationArray {
+                        
+                        let mainObject = location.valueForKey("main") as! NSDictionary
+                        let windObject = location.valueForKey("wind") as! NSDictionary
+                        let cloudObject = location.valueForKey("clouds") as! NSDictionary
+                        let weatherObject = location.valueForKey("weather")?.objectAtIndex(0) as! NSDictionary
+
+                        let city: City = City()
+                        city.name =  (location.valueForKey("name") as? String)!
+                        city.temperature = String(mainObject.valueForKey("temp")!)
+                        city.humidity = String(mainObject.valueForKey("humidity")!)
+                        city.pressure = String(mainObject.valueForKey("pressure")!)
+                        city.windSpeed = String(windObject.valueForKey("speed")!)
+                        city.cloudiness = String(cloudObject.valueForKey("all")!)
+                        city.weather = String(weatherObject.valueForKey("main")!)
+                        city.weatherDescription = String(weatherObject.valueForKey("description")!)
+                        city.date = NSDate(timeIntervalSince1970: Double(location.valueForKey("dt")! as! NSNumber))
+
+                        self.cities.append(city)
+                        
+                        
+                        
+                    }
+                    
+                    let db: DB = DB()
+                    db.insertCities(self.cities) //insert all cities into DB
+                    
+                    if let db_Cities = db.getCites() {
+                        self.cities = db_Cities
+                        
+                    }
+                    /* chk all entries
+                    self.cities = db.getCites()!
+                    for city in self.cities {
+                        print(city.toString())
+                    }
+                    */
+                    
                     self.overViewTable.reloadData()
                     self.refreshControl.endRefreshing()
                 }
@@ -72,7 +114,15 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                 
             case .Failure(let error):
                 print("Request failed with error: \(error)")
-                //probably retry or sth.
+                //get old data
+                print("get old data instead")
+                let db: DB = DB()
+                if let db_Cities = db.getCites() {
+                    self.cities = db_Cities
+                }
+                
+                self.overViewTable.reloadData()
+                self.refreshControl.endRefreshing()
             }
         }
 
@@ -85,7 +135,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.locationArray.count
+        return self.cities.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -93,13 +143,14 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         
         let cell = tableView.dequeueReusableCellWithIdentifier( "Cell", forIndexPath: indexPath) as! WeatherOverviewCell
     
-        let currentLocation = self.locationArray[indexPath.row]
-        let mainObject = currentLocation.valueForKey("main") as! NSDictionary
-        let windObject = currentLocation.valueForKey("wind") as! NSDictionary
-        cell.cityNameLab?.text =  currentLocation.valueForKey("name") as? String
-        cell.temperatureLabel?.text = String(mainObject.valueForKey("temp")!) + " °C"
-        cell.humidityLabel?.text = String(mainObject.valueForKey("humidity")!) + "%"
-        cell.windspeedLabel?.text = String(windObject.valueForKey("speed")!) + " m/s"
+        let currentLocation = self.cities[indexPath.row]
+        cell.cityNameLab?.text =  currentLocation.name
+        cell.temperatureLabel?.text = currentLocation.temperature + " °C"
+        cell.humidityLabel?.text = currentLocation.humidity + "%"
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        cell.dateLabel?.text = dateFormatter.stringFromDate(currentLocation.date)
         
         
         return cell
@@ -119,7 +170,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         if segue.identifier == "detailSegue" {
             let cell = sender as? UITableViewCell
             let indexPath = overViewTable.indexPathForCell(cell!)
-            let cityObject = locationArray.objectAtIndex(indexPath!.row) as! NSDictionary
+            let cityObject = self.cities[indexPath!.row]
             
             let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
             

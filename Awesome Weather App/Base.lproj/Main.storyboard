@@ -64,28 +64,28 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iPk-sx-SKj">
-                                                    <rect key="frame" x="8" y="11" width="279" height="55"/>
+                                                    <rect key="frame" x="8" y="11" width="205" height="55"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="279" id="VoT-Fa-haA"/>
+                                                        <constraint firstAttribute="width" constant="205" id="VoT-Fa-haA"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Humidity" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fSI-1K-YbI">
-                                                    <rect key="frame" x="295" y="28" width="297" height="21"/>
+                                                    <rect key="frame" x="221" y="28" width="371" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wind" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zAf-hA-JWd">
-                                                    <rect key="frame" x="295" y="48" width="297" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Date" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zAf-hA-JWd">
+                                                    <rect key="frame" x="221" y="48" width="371" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temp" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MSb-a6-Xy2">
-                                                    <rect key="frame" x="295" y="8" width="297" height="21"/>
+                                                    <rect key="frame" x="221" y="8" width="371" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -108,9 +108,9 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="cityNameLab" destination="iPk-sx-SKj" id="ut9-Mo-KcR"/>
+                                            <outlet property="dateLabel" destination="zAf-hA-JWd" id="TAl-lS-Nvc"/>
                                             <outlet property="humidityLabel" destination="fSI-1K-YbI" id="zhb-VW-Hjw"/>
                                             <outlet property="temperatureLabel" destination="MSb-a6-Xy2" id="YHj-i5-XHa"/>
-                                            <outlet property="windspeedLabel" destination="zAf-hA-JWd" id="Qnj-ja-vH9"/>
                                             <segue destination="iTf-EY-0b3" kind="presentation" identifier="detailSegue" id="4aB-cQ-MWP"/>
                                         </connections>
                                     </tableViewCell>

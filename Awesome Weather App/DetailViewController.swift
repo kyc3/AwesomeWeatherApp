@@ -10,7 +10,7 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
-    var cityObject: NSDictionary!
+    var cityObject: City!
     
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
@@ -22,21 +22,17 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let mainObject = cityObject.valueForKey("main") as! NSDictionary
-        let windObject = cityObject.valueForKey("wind") as! NSDictionary
-        let cloudObject = cityObject.valueForKey("clouds") as! NSDictionary
-        let weatherObject = cityObject.valueForKey("weather")?.objectAtIndex(0) as! NSDictionary
         
-        self.title = String(cityObject.valueForKey("name")!)
+        self.title = cityObject.name
         //navigationBar.topItem!.title = String(cityObject.valueForKey("name")!)
         
-        temperatureLabel.text = String(mainObject.valueForKey("temp")!) + " °C"
-        humidityLabel.text = String(mainObject.valueForKey("humidity")!) + "%"
-        pressureLabel.text = String(mainObject.valueForKey("pressure")!) + "hPa"
-        windspeedLabel.text = String(windObject.valueForKey("speed")!) + " m/s"
-        cloudinessLabel.text = String(cloudObject.valueForKey("all")!) + "%"
-        weatherLabel.text = String(weatherObject.valueForKey("main")!)
-        weatherDescriptionLabel.text = String(weatherObject.valueForKey("description")!)
+        temperatureLabel.text = cityObject.temperature + " °C"
+        humidityLabel.text = cityObject.humidity + "%"
+        pressureLabel.text = cityObject.pressure + "hPa"
+        windspeedLabel.text = cityObject.windSpeed + " m/s"
+        cloudinessLabel.text = cityObject.cloudiness + "%"
+        weatherLabel.text = cityObject.weather
+        weatherDescriptionLabel.text = cityObject.weatherDescription
         
         // Do any additional setup after loading the view.
     }
