@@ -58,7 +58,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     func getWeatherDataToLocation(lat: Double, lon: Double) {
         var url: String
-        url = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=\(self.radius)&units=metric&appid=44db6a862fba0b067b1930da0d769e98"
+        url = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=\(self.radius)&units=metric&appid=92e560e91d10ec1da8179b74a9a01c0d"
         Alamofire.request(.GET, url).responseJSON() {
             response in switch response.result {
             case .Success(let JSON):
@@ -87,7 +87,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                         city.weather = String(weatherObject.valueForKey("main")!)
                         city.weatherDescription = String(weatherObject.valueForKey("description")!)
                         city.date = NSDate(timeIntervalSince1970: Double(location.valueForKey("dt")! as! NSNumber))
-
+                        city.icon = String(weatherObject.valueForKey("icon")!)
                         self.cities.append(city)
                         
                         
@@ -155,6 +155,28 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         cell.dateLabel?.text = dateFormatter.stringFromDate(currentLocation.date)
         
+        let url: String = "http://openweathermap.org/img/w/\(currentLocation.icon).png"
+        
+        let db: DB = DB()
+        let imageData: NSData? = db.getIcon(currentLocation.icon)
+        if imageData?.length > 0 {
+            //image already in DB
+            let image = UIImage(data: imageData! as NSData)
+            cell.cellIconView.image = image
+        }
+        else {
+            //image not yet in DB
+            Alamofire.request(.GET, url).response {
+                (_,response,data,_) in
+                if response?.statusCode == 200 {
+                    let image = UIImage(data: data! as NSData)
+                    cell.cellIconView.image = image
+                    db.insertIcon(currentLocation.icon, icon: data! as NSData)
+                }
+            }
+        }
+        
+        
         
         return cell
     }
@@ -171,18 +193,16 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {
-            let cell = sender as? UITableViewCell
+            let cell = sender as? WeatherOverviewCell
             let indexPath = overViewTable.indexPathForCell(cell!)
             let cityObject = self.cities[indexPath!.row]
             
             //let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
             
             let detailVC = segue.destinationViewController as! DetailViewController
-            detailVC.cityObject = cityObject 
+            detailVC.cityObject = cityObject
+            detailVC.image = cell!.cellIconView.image!
             
-            
-            
-            //player = Player(name: nameTextField.text!, game: "Chess", rating: 1)
         }
     }
     

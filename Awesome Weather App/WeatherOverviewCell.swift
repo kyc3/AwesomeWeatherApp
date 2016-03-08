@@ -11,6 +11,7 @@ import UIKit
 class WeatherOverviewCell: UITableViewCell {
     
     
+    @IBOutlet weak var cellIconView: UIImageView!
     @IBOutlet weak var cityNameLab: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!

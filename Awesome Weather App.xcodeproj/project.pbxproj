@@ -10,6 +10,7 @@
 		097DD47E60997B36AB59CDBB /* Pods_Awesome_Weather_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0D3A759C9544FA4E76AA7 /* Pods_Awesome_Weather_App.framework */; };
 		C2364CA71C898EFE006C67CE /* WeatherOverviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2364CA61C898EFE006C67CE /* WeatherOverviewCell.swift */; };
 		C2364CA91C89E397006C67CE /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2364CA81C89E397006C67CE /* DetailViewController.swift */; };
+		C27650DB1C8F0AFF00E3DFC0 /* cities.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = C27650DA1C8F0AFF00E3DFC0 /* cities.sqlite */; };
 		C2C5FE2B1C886BF400667D3E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */; };
 		C2C5FE301C886BF400667D3E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2C5FE2E1C886BF400667D3E /* Main.storyboard */; };
 		C2C5FE321C886BF500667D3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2C5FE311C886BF500667D3E /* Assets.xcassets */; };
@@ -18,7 +19,6 @@
 		C2C5FE3F1C8879EC00667D3E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2C5FE3E1C8879EC00667D3E /* Alamofire.framework */; };
 		C2E8160C1C8A06C100925E53 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8160B1C8A06C100925E53 /* City.swift */; };
 		C2E8160E1C8D5E2400925E53 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8160D1C8D5E2400925E53 /* DB.swift */; };
-		C2E816141C8D7B4B00925E53 /* cities.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = C2E816131C8D7B4B00925E53 /* cities.sqlite */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +27,7 @@
 		8BF0A23788146ADDE100D932 /* Pods-Awesome Weather App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awesome Weather App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Awesome Weather App/Pods-Awesome Weather App.debug.xcconfig"; sourceTree = "<group>"; };
 		C2364CA61C898EFE006C67CE /* WeatherOverviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherOverviewCell.swift; sourceTree = "<group>"; };
 		C2364CA81C89E397006C67CE /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		C27650DA1C8F0AFF00E3DFC0 /* cities.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = cities.sqlite; sourceTree = "<group>"; };
 		C2C5FE271C886BF400667D3E /* Awesome Weather App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awesome Weather App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2C5FE2F1C886BF400667D3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -37,7 +38,6 @@
 		C2C5FE3E1C8879EC00667D3E /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = "Pods/../build/Debug-iphoneos/Alamofire.framework"; sourceTree = "<group>"; };
 		C2E8160B1C8A06C100925E53 /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		C2E8160D1C8D5E2400925E53 /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
-		C2E816131C8D7B4B00925E53 /* cities.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = cities.sqlite; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +92,7 @@
 		C2C5FE291C886BF400667D3E /* Awesome Weather App */ = {
 			isa = PBXGroup;
 			children = (
-				C2E816131C8D7B4B00925E53 /* cities.sqlite */,
+				C27650DA1C8F0AFF00E3DFC0 /* cities.sqlite */,
 				C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */,
 				C2C5FE2E1C886BF400667D3E /* Main.storyboard */,
 				C2E8160B1C8A06C100925E53 /* City.swift */,
@@ -171,7 +171,7 @@
 			files = (
 				C2C5FE351C886BF500667D3E /* LaunchScreen.storyboard in Resources */,
 				C2C5FE321C886BF500667D3E /* Assets.xcassets in Resources */,
-				C2E816141C8D7B4B00925E53 /* cities.sqlite in Resources */,
+				C27650DB1C8F0AFF00E3DFC0 /* cities.sqlite in Resources */,
 				C2C5FE301C886BF400667D3E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -50,7 +50,12 @@ class DB: NSObject {
         //empty the db
         do {
         let db = try Connection(self.dbPath)
+            do {
             try db.execute("DELETE FROM cities")
+            }
+            catch{
+                print("error in delete")
+            }
             //insert new entries
             for city in cities {
                 self.insert(city)
@@ -66,18 +71,19 @@ class DB: NSObject {
     func insert(city: City) {
         do {
         let db = try Connection(self.dbPath)
-        let stmt = try db.prepare("INSERT INTO cities (name,temperature,humidity,pressure,windspeed,weather,weatherDescription,cloudiness,date) VALUES (?,?,?,?,?,?,?,?,?)")
-        try stmt.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970))
+        let stmt = try db.prepare("INSERT INTO cities (name,temperature,humidity,pressure,windspeed,weather,weatherDescription,cloudiness,date,icon) VALUES (?,?,?,?,?,?,?,?,?,?)")
+        try stmt.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970),city.icon)
         }
         catch _ {
             print("Error inserting city object")
         }
     }
+    
     func getCites() ->[City]? {
         do {
         let db = try Connection(self.dbPath)
             var cities: [City] = [City]()
-        for row in try db.prepare("SELECT id, name,temperature,humidity,pressure,cloudiness,weather,weatherDescription,windspeed,date FROM cities") {
+        for row in try db.prepare("SELECT id, name,temperature,humidity,pressure,cloudiness,weather,weatherDescription,windspeed,date,icon FROM cities") {
             let city: City = City()
             city.name = String(row[1]!)
             city.temperature = String(row[2]!)
@@ -89,6 +95,7 @@ class DB: NSObject {
             city.windSpeed = String(row[8]!)
             let dt = String(row[9]!)
             city.date = NSDate(timeIntervalSince1970: Double(dt)!)
+            city.icon = String(row[10]!)
             cities.append(city)
         }
             return cities
@@ -98,5 +105,60 @@ class DB: NSObject {
             return nil
         }
     }
+    
+    
+    
+    
+    func insertIcon(iconTitle: String,icon: NSData) {
+        do {
+            let chkData: NSData = self.getIcon(iconTitle)!
+            if chkData.length == 0 { //check if icon is already in DB
+                let db = try Connection(self.dbPath)
+                let stmt = try db.prepare("INSERT INTO icons (iconTitle,icon) VALUES (?,?)")
+                let iconStr: String = icon.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+                //print(iconStr)
+                do {
+                    try stmt.run(iconTitle,iconStr)
+                }
+                catch {
+                    print("SQL Statement Error: \(error)")
+                }
+
+            }
+            else {
+                // icon is already in DB
+            }
+        }
+        catch {
+            print("Error inserting icon object")
+        }
+    }
+    func getIcon(iconTitle: String) -> NSData? {
+        
+        do {
+            let db = try Connection(self.dbPath)
+            var imageData: NSData? = NSData()
+            do {
+                for row in try db.prepare("SELECT icon FROM icons WHERE iconTitle='\(iconTitle)'") {
+                
+                    imageData = NSData(base64EncodedString: String(row[0]!), options: NSDataBase64DecodingOptions(rawValue: 0))
+                }
+            return imageData
+            }
+            catch {
+                print("error retrieving: \(error)")
+            }
+            return nil
+        }
+        catch {
+            print("image could not be retrieved")
+            return nil
+        }
+
+        
+    }
+    
+    
+    
     
 }

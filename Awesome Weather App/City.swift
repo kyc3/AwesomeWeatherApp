@@ -20,6 +20,7 @@ class City: NSObject {
     var weather: String = ""
     var weatherDescription: String = ""
     var cloudiness: String = ""
+    var icon: String = ""
     var date: NSDate = NSDate()
     
     
