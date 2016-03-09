@@ -9,22 +9,16 @@
 import UIKit
 
 class WeatherOverviewCell: UITableViewCell {
-    
-    
     @IBOutlet weak var cellIconView: UIImageView!
     @IBOutlet weak var cityNameLab: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 }

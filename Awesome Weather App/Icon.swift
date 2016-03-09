@@ -9,8 +9,6 @@
 import Foundation
 
 class Icon: NSObject {
-    
     var iconTitle: String = ""
     var icon: NSData = NSData()
-    
 }

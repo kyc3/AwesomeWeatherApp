@@ -12,7 +12,6 @@ import CoreLocation
 import MapKit
 
 class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate, UIPickerViewDataSource,UIPickerViewDelegate {
-    
     @IBOutlet weak var radiusButton: UIBarButtonItem!
     @IBOutlet weak var overViewTable: UITableView!
     var locationManager:CLLocationManager!
@@ -21,9 +20,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     var cities: [City] = [City]()
     let radiusOptions: [Int] = [1,2,3,4,5,6,7,8]
     var radius:Int = 4
-    
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         self.refreshControl = UIRefreshControl()
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -32,20 +29,18 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     
     override func didReceiveMemoryWarning() {
-        
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     override func viewDidAppear(animated: Bool) {
-        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
-        
     }
+    
     /*
     // MARK: - Navigation
     
@@ -56,7 +51,6 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     */
     func getWeatherDataToLocation(lat: Double, lon: Double) {
-        
         var url: String
         url = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=\(self.radius)&units=metric&appid=92e560e91d10ec1da8179b74a9a01c0d"
         Alamofire.request(.GET, url).responseJSON() {
@@ -85,13 +79,10 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                         city.icon = String(weatherObject.valueForKey("icon")!)
                         self.cities.append(city)
                     }
-                    
                     let db: CityDao = CityDao()
                     db.insertCities(self.cities) //insert all cities into DB
-                    
                     if let db_Cities = db.getCites() {
                         self.cities = db_Cities
-                        
                     }
                     /* chk all entries
                     self.cities = db.getCites()!
@@ -99,14 +90,12 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                     print(city.toString())
                     }
                     */
-                    
                     self.overViewTable.reloadData()
                     self.refreshControl.endRefreshing()
                 }
                 else {
                     print("No cities found")
                 }
-                
             case .Failure(let error):
                 print("Request failed with error: \(error)")
                 //get old data
@@ -115,28 +104,22 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                 if let db_Cities = db.getCites() {
                     self.cities = db_Cities
                 }
-                
                 self.overViewTable.reloadData()
                 self.refreshControl.endRefreshing()
             }
         }
-        
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
         manager.stopUpdatingLocation()
         self.getWeatherDataToLocation(manager.location!.coordinate.latitude, lon: manager.location!.coordinate.longitude)
-        
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return self.cities.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCellWithIdentifier( "Cell", forIndexPath: indexPath) as! WeatherOverviewCell
         let currentLocation = self.cities[indexPath.row]
         cell.cityNameLab?.text =  currentLocation.name
@@ -176,19 +159,15 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         
     }
     
-    func refresh(sender:AnyObject)
-    {
+    func refresh(sender:AnyObject) {
         self.locationManager.startUpdatingLocation()
-        
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
         if segue.identifier == "detailSegue" {
             let cell = sender as? WeatherOverviewCell
             let indexPath = overViewTable.indexPathForCell(cell!)
             let cityObject = self.cities[indexPath!.row]
-            
             let detailVC = segue.destinationViewController as! DetailViewController
             detailVC.cityObject = cityObject
             detailVC.image = cell!.cellIconView.image!
@@ -196,7 +175,6 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     
     @IBAction func chooseRadius(sender: AnyObject) {
-        
         let pickerFrame = CGRectMake(0, (self.view.frame.height/3) * 2, self.view.frame.width, (self.view.frame.height/3))
         let picker = UIPickerView(frame: pickerFrame)
         picker.delegate = self
@@ -205,31 +183,25 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         self.view.addSubview(picker)
         picker.selectRow(radiusOptions.indexOf(radius)!, inComponent: 0, animated: false)
         radiusButton.enabled = false
-        
     }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        
         return 1
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        
         return radiusOptions.count
     }
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        
         return "\(self.radiusOptions[row])"
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
         self.radius = radiusOptions[row]
         self.locationManager.startUpdatingLocation()
         radiusButton.title = "Radius (\(radius))"
         pickerView.removeFromSuperview()
         radiusButton.enabled = true
     }
-    
 }

@@ -9,9 +9,7 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-    
     var cityObject: City!
-    
     @IBOutlet weak var iconView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
@@ -20,15 +18,11 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var weatherLabel: UILabel!
     @IBOutlet weak var weatherDescriptionLabel: UILabel!
     @IBOutlet weak var cloudinessLabel: UILabel!
-    
     var image: UIImage = UIImage()
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.title = cityObject.name
         //navigationBar.topItem!.title = String(cityObject.valueForKey("name")!)
-        
         temperatureLabel.text = cityObject.temperature + " °C"
         humidityLabel.text = cityObject.humidity + "%"
         pressureLabel.text = cityObject.pressure + "hPa"
@@ -36,9 +30,7 @@ class DetailViewController: UIViewController {
         cloudinessLabel.text = cityObject.cloudiness + "%"
         weatherLabel.text = cityObject.weather
         weatherDescriptionLabel.text = cityObject.weatherDescription
-        
         self.iconView.image = self.image
-        
         // Do any additional setup after loading the view.
     }
 

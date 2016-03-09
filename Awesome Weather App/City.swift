@@ -11,7 +11,6 @@ import SQLite
 
 
 class City: NSObject {
-    
     var name: String = ""
     var temperature: String = ""
     var humidity: String = ""
@@ -22,8 +21,6 @@ class City: NSObject {
     var cloudiness: String = ""
     var icon: String = ""
     var date: NSDate = NSDate()
-    
-    
     func toString() -> String {
         return "Name: \(self.name)\n Temperature: \(self.temperature)\n Humidity: \(self.humidity)\n pressure: \(self.pressure)\n windspeed: \(self.windSpeed)\n weather: \(self.weather)\n weatherDescription: \(self.weatherDescription)\n cloudiness: \(self.cloudiness)\n date: \(date)"
     }
