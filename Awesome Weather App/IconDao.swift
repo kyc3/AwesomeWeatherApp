@@ -16,7 +16,7 @@ class IconDao: NSObject {
         do {
             let chkData: NSData = self.getIcon(icon.iconTitle)!.icon
             if chkData.length == 0 { //check if icon is already in DB
-                let db = try Connection(DB.sharedInstance.dbPath)
+                let db = DB.sharedInstance.connection!
                 let stmt = try db.prepare("INSERT INTO icons (\(IconDao.iconTitle),\(IconDao.icon)) VALUES (?,?)")
                 let iconStr: String = icon.icon.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
                 //print(iconStr)
@@ -37,28 +37,21 @@ class IconDao: NSObject {
     }
     
     func getIcon(iconTitle: String) -> Icon? {
+        let db = DB.sharedInstance.connection!
+        var imageData: NSData? = NSData()
         do {
-            let db = try Connection(DB.sharedInstance.dbPath)
-            var imageData: NSData? = NSData()
-            do {
-                for row in try db.prepare("SELECT \(IconDao.icon) FROM icons WHERE \(IconDao.iconTitle)='\(iconTitle)'") {
-                    
-                    imageData = NSData(base64EncodedString: String(row[0]!), options: NSDataBase64DecodingOptions(rawValue: 0))
-                }
-                let icon: Icon = Icon()
-                icon.iconTitle = iconTitle
-                icon.icon = imageData!
-                return icon
+            for row in try db.prepare("SELECT \(IconDao.icon) FROM icons WHERE \(IconDao.iconTitle)='\(iconTitle)'") {
+                imageData = NSData(base64EncodedString: String(row[0]!), options: NSDataBase64DecodingOptions(rawValue: 0))
             }
-            catch {
-                print("error retrieving: \(error)")
-            }
-            return nil
+            let icon: Icon = Icon()
+            icon.iconTitle = iconTitle
+            icon.icon = imageData!
+            return icon
         }
         catch {
-            print("image could not be retrieved")
-            return nil
+            print("error retrieving: \(error)")
         }
+        return nil
     }
     
 }

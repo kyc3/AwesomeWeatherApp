@@ -24,38 +24,33 @@ class CityDao: NSObject {
     
     func insertCities(cities: [City]) {
         //empty the db
+        let db = DB.sharedInstance.connection!
         do {
-            let db = try Connection(DB.sharedInstance.dbPath)
-            do {
-                try db.execute("DELETE FROM cities")
-            }
-            catch{
-                print("error in delete")
-            }
-            //insert new entries
-            for city in cities {
-                self.insert(city)
-            }
+            try db.execute("DELETE FROM cities")
         }
-        catch {
-            print("Error insertCities")
+        catch{
+            print("error in delete")
+        }
+        //insert new entries
+        for city in cities {
+            self.insert(city)
         }
     }
     
     func insert(city: City) {
         do {
-            let db = try Connection(DB.sharedInstance.dbPath)
+            let db = DB.sharedInstance.connection!
             let stmt = try db.prepare("INSERT INTO cities (\(CityDao.name),\(CityDao.temperature),\(CityDao.humidity),\(CityDao.pressure),\(CityDao.windspeed),\(CityDao.weather),\(CityDao.weatherDescription),\(CityDao.cloudiness),\(CityDao.date),\(CityDao.icon)) VALUES (?,?,?,?,?,?,?,?,?,?)")
             try stmt.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970),city.icon)
         }
-        catch _ {
-            print("Error inserting city object")
+        catch {
+            print("Error inserting city object: \(error)")
         }
     }
     
     func getCites() ->[City]? {
         do {
-            let db = try Connection(DB.sharedInstance.dbPath)
+            let db = DB.sharedInstance.connection!
             var cities: [City] = [City]()
             for row in try db.prepare("SELECT \(CityDao.id),\(CityDao.name),\(CityDao.temperature),\(CityDao.humidity),\(CityDao.pressure),\(CityDao.cloudiness),\(CityDao.weather),\(CityDao.weatherDescription),\(CityDao.windspeed),\(CityDao.date),\(CityDao.icon) FROM cities") {
                 let city: City = City()

@@ -12,11 +12,20 @@ import SQLite
 class DB: NSObject {
     static let sharedInstance = DB()
     var dbPath: String
+    var connection: Connection?
     override init() {
         let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
         self.dbPath = documentsURL.URLByAppendingPathComponent("cities.sqlite").path!
-        super.init()
-        self.copyFile("cities.sqlite")
+        do {
+            self.connection = nil
+            super.init()
+            self.copyFile("cities.sqlite")
+            self.connection = try Connection(dbPath)
+        }
+        catch {
+            print("connection failed: \(error)")
+        }
+        
     }
     
     func copyFile(fileName: NSString) {
