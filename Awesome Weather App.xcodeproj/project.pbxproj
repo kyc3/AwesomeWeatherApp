@@ -17,6 +17,9 @@
 		C2C5FE351C886BF500667D3E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2C5FE331C886BF500667D3E /* LaunchScreen.storyboard */; };
 		C2C5FE3D1C88774400667D3E /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C5FE3C1C88774400667D3E /* MasterViewController.swift */; };
 		C2C5FE3F1C8879EC00667D3E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2C5FE3E1C8879EC00667D3E /* Alamofire.framework */; };
+		C2C74D811C904D5F00C11A8A /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C74D801C904D5F00C11A8A /* Icon.swift */; };
+		C2C74D831C904E1A00C11A8A /* CityDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C74D821C904E1A00C11A8A /* CityDao.swift */; };
+		C2C74D851C904EAC00C11A8A /* IconDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C74D841C904EAC00C11A8A /* IconDao.swift */; };
 		C2E8160C1C8A06C100925E53 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8160B1C8A06C100925E53 /* City.swift */; };
 		C2E8160E1C8D5E2400925E53 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8160D1C8D5E2400925E53 /* DB.swift */; };
 /* End PBXBuildFile section */
@@ -36,6 +39,9 @@
 		C2C5FE361C886BF500667D3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2C5FE3C1C88774400667D3E /* MasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
 		C2C5FE3E1C8879EC00667D3E /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = "Pods/../build/Debug-iphoneos/Alamofire.framework"; sourceTree = "<group>"; };
+		C2C74D801C904D5F00C11A8A /* Icon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		C2C74D821C904E1A00C11A8A /* CityDao.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CityDao.swift; sourceTree = "<group>"; };
+		C2C74D841C904EAC00C11A8A /* IconDao.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconDao.swift; sourceTree = "<group>"; };
 		C2E8160B1C8A06C100925E53 /* City.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		C2E8160D1C8D5E2400925E53 /* DB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -94,6 +100,9 @@
 			children = (
 				C27650DA1C8F0AFF00E3DFC0 /* cities.sqlite */,
 				C2C5FE2A1C886BF400667D3E /* AppDelegate.swift */,
+				C2C74D801C904D5F00C11A8A /* Icon.swift */,
+				C2C74D821C904E1A00C11A8A /* CityDao.swift */,
+				C2C74D841C904EAC00C11A8A /* IconDao.swift */,
 				C2C5FE2E1C886BF400667D3E /* Main.storyboard */,
 				C2E8160B1C8A06C100925E53 /* City.swift */,
 				C2E8160D1C8D5E2400925E53 /* DB.swift */,
@@ -233,8 +242,11 @@
 			files = (
 				C2364CA71C898EFE006C67CE /* WeatherOverviewCell.swift in Sources */,
 				C2E8160C1C8A06C100925E53 /* City.swift in Sources */,
+				C2C74D851C904EAC00C11A8A /* IconDao.swift in Sources */,
+				C2C74D811C904D5F00C11A8A /* Icon.swift in Sources */,
 				C2C5FE2B1C886BF400667D3E /* AppDelegate.swift in Sources */,
 				C2C5FE3D1C88774400667D3E /* MasterViewController.swift in Sources */,
+				C2C74D831C904E1A00C11A8A /* CityDao.swift in Sources */,
 				C2364CA91C89E397006C67CE /* DetailViewController.swift in Sources */,
 				C2E8160E1C8D5E2400925E53 /* DB.swift in Sources */,
 			);

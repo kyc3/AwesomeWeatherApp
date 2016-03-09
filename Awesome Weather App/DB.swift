@@ -11,6 +11,7 @@ import SQLite
 
 class DB: NSObject {
     
+    static let sharedInstance = DB()
     var dbPath: String
     
     override init() {
@@ -106,24 +107,21 @@ class DB: NSObject {
         }
     }
     
-    
-    
-    
-    func insertIcon(iconTitle: String,icon: NSData) {
+    func insertIcon(icon: Icon) {
         do {
-            let chkData: NSData = self.getIcon(iconTitle)!
+            let chkData: NSData = self.getIcon(icon.iconTitle)!.icon
             if chkData.length == 0 { //check if icon is already in DB
                 let db = try Connection(self.dbPath)
                 let stmt = try db.prepare("INSERT INTO icons (iconTitle,icon) VALUES (?,?)")
-                let iconStr: String = icon.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+                let iconStr: String = icon.icon.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
                 //print(iconStr)
                 do {
-                    try stmt.run(iconTitle,iconStr)
+                    try stmt.run(icon.iconTitle,iconStr)
                 }
                 catch {
                     print("SQL Statement Error: \(error)")
                 }
-
+                
             }
             else {
                 // icon is already in DB
@@ -133,17 +131,21 @@ class DB: NSObject {
             print("Error inserting icon object")
         }
     }
-    func getIcon(iconTitle: String) -> NSData? {
+    
+    func getIcon(iconTitle: String) -> Icon? {
         
         do {
             let db = try Connection(self.dbPath)
             var imageData: NSData? = NSData()
             do {
                 for row in try db.prepare("SELECT icon FROM icons WHERE iconTitle='\(iconTitle)'") {
-                
+                    
                     imageData = NSData(base64EncodedString: String(row[0]!), options: NSDataBase64DecodingOptions(rawValue: 0))
                 }
-            return imageData
+                let icon: Icon = Icon()
+                icon.iconTitle = iconTitle
+                icon.icon = imageData!
+                return icon
             }
             catch {
                 print("error retrieving: \(error)")
@@ -154,11 +156,8 @@ class DB: NSObject {
             print("image could not be retrieved")
             return nil
         }
-
+        
         
     }
-    
-    
-    
     
 }
