@@ -197,14 +197,18 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
             let indexPath = overViewTable.indexPathForCell(cell!)
             let cityObject = self.cities[indexPath!.row]
             
-            //let navController: UINavigationController = segue.destinationViewController as! UINavigationController;
-            
             let detailVC = segue.destinationViewController as! DetailViewController
             detailVC.cityObject = cityObject
             detailVC.image = cell!.cellIconView.image!
             
         }
     }
+    
+    
+    
+    
+    
+    
     
     @IBAction func chooseRadius(sender: AnyObject) {
         let pickerFrame = CGRectMake(0, (self.view.frame.height/3) * 2, self.view.frame.width, (self.view.frame.height/3))
