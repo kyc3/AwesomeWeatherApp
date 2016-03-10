@@ -21,15 +21,15 @@ class DetailViewController: UIViewController {
     var image: UIImage = UIImage()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = cityObject.name
-        //navigationBar.topItem!.title = String(cityObject.valueForKey("name")!)
-        temperatureLabel.text = cityObject.temperature + " °C"
-        humidityLabel.text = cityObject.humidity + "%"
-        pressureLabel.text = cityObject.pressure + "hPa"
-        windspeedLabel.text = cityObject.windSpeed + " m/s"
-        cloudinessLabel.text = cityObject.cloudiness + "%"
-        weatherLabel.text = cityObject.weather
-        weatherDescriptionLabel.text = cityObject.weatherDescription
+        self.title = self.cityObject.name
+        //navigationBar.topItem!.title = String(self.cityObject.valueForKey("name")!)
+        self.temperatureLabel.text = self.cityObject.temperature + " °C"
+        self.humidityLabel.text = self.cityObject.humidity + "%"
+        self.pressureLabel.text = self.cityObject.pressure + "hPa"
+        self.windspeedLabel.text = self.cityObject.windSpeed + " m/s"
+        self.cloudinessLabel.text = self.cityObject.cloudiness + "%"
+        self.weatherLabel.text = self.cityObject.weather
+        self.weatherDescriptionLabel.text = self.cityObject.weatherDescription
         self.iconView.image = self.image
         // Do any additional setup after loading the view.
     }

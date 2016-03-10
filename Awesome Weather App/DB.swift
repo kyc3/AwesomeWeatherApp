@@ -20,7 +20,7 @@ class DB: NSObject {
             self.connection = nil
             super.init()
             self.copyFile("cities.sqlite")
-            self.connection = try Connection(dbPath)
+            self.connection = try Connection(self.dbPath)
         }
         catch {
             print("connection failed: \(error)")
@@ -30,12 +30,12 @@ class DB: NSObject {
     
     func copyFile(fileName: NSString) {
         let fileManager = NSFileManager.defaultManager()
-        if !fileManager.fileExistsAtPath(dbPath) {
+        if !fileManager.fileExistsAtPath(self.dbPath) {
             let documentsURL = NSBundle.mainBundle().resourceURL
             let fromPath = documentsURL!.URLByAppendingPathComponent(fileName as String)
             var error : NSError?
             do {
-                try fileManager.copyItemAtPath(fromPath.path!, toPath: dbPath)
+                try fileManager.copyItemAtPath(fromPath.path!, toPath: self.dbPath)
             } catch let error1 as NSError {
                 error = error1
             }
