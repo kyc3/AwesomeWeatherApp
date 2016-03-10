@@ -52,39 +52,15 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     // Pass the selected object to the new view controller.
     }
     */
-    func getWeatherDataToLocation(lat: Double, lon: Double) {
-        let url: String = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(lon)&cnt=\(self.radius)&units=metric&appid=92e560e91d10ec1da8179b74a9a01c0d"
+    func getWeatherDataLocation(lat: Double, long: Double, completionHandler: (responseData: NSDictionary?, error: NSError?) -> Void) {
+        let url: String = "http://api.openweathermap.org/data/2.5/find?lat=\(lat)&lon=\(long)&cnt=\(self.radius)&units=metric&appid=92e560e91d10ec1da8179b74a9a01c0d"
         Alamofire.request(.GET, url).responseJSON() {
             response in switch response.result {
             case .Success(let JSON):
                 let response = JSON as! NSDictionary
-                if (response.valueForKey("list") != nil) {
-                    print("succesfully got new data")
-                    self.cities.removeAll()
-                    let locationArray = response.valueForKey("list")! as! NSArray
-                    self.parseCityObjects(locationArray as! [NSDictionary])
-                    /* chk all entries
-                    self.cities = db.getCites()!
-                    for city in self.cities {
-                        print(city.toString())
-                    }
-                    */
-                    self.overViewTable.reloadData()
-                    self.refreshControl.endRefreshing()
-                }
-                else {
-                    print("No cities found")
-                }
+                completionHandler(responseData: response, error: nil)
             case .Failure(let error):
-                print("Request failed with error: \(error)")
-                //get old data
-                print("get old data instead")
-                let db: CityDao = CityDao()
-                if let db_Cities = db.getCites() {
-                    self.cities = db_Cities
-                }
-                self.overViewTable.reloadData()
-                self.refreshControl.endRefreshing()
+                completionHandler(responseData: nil, error: error)
             }
         }
     }
@@ -136,7 +112,34 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         manager.stopUpdatingLocation()
-        self.getWeatherDataToLocation(manager.location!.coordinate.latitude, lon: manager.location!.coordinate.longitude)
+        self.getWeatherDataLocation(manager.location!.coordinate.latitude, long: manager.location!.coordinate.longitude, completionHandler: {
+            (response: NSDictionary?,error:NSError?) in
+            if (response != nil && response!.valueForKey("list") != nil) {
+                print("succesfully got new data")
+                self.cities.removeAll()
+                let locationArray = response!.valueForKey("list")! as! NSArray
+                self.parseCityObjects(locationArray as! [NSDictionary])
+                /* chk all entries
+                self.cities = db.getCites()!
+                for city in self.cities {
+                print(city.toString())
+                }
+                */
+                self.overViewTable.reloadData()
+                self.refreshControl.endRefreshing()
+            }
+            else {
+                print("No cities found: \(error!)")
+                //get old data
+                print("get old data instead")
+                let db: CityDao = CityDao()
+                if let db_Cities = db.getCites() {
+                    self.cities = db_Cities
+                }
+                self.overViewTable.reloadData()
+                self.refreshControl.endRefreshing()
+            }
+        })
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
