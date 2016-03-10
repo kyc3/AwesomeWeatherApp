@@ -92,7 +92,7 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     
     func parseCityMainObject(mainRaw: NSDictionary, inout city: City) {
-        city.temperature = String(mainRaw.valueForKey("temp")!)
+        city.temperature = String(Double(mainRaw.valueForKey("temp")! as! NSNumber))
         city.humidity = String(mainRaw.valueForKey("humidity")!)
         city.pressure = String(mainRaw.valueForKey("pressure")!)
     }
@@ -112,34 +112,35 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         manager.stopUpdatingLocation()
-        self.getWeatherDataLocation(manager.location!.coordinate.latitude, long: manager.location!.coordinate.longitude, completionHandler: {
-            (response: NSDictionary?,error:NSError?) in
-            if (response != nil && response!.valueForKey("list") != nil) {
-                print("succesfully got new data")
-                self.cities.removeAll()
-                let locationArray = response!.valueForKey("list")! as! NSArray
-                self.parseCityObjects(locationArray as! [NSDictionary])
-                /* chk all entries
-                self.cities = db.getCites()!
-                for city in self.cities {
-                print(city.toString())
-                }
-                */
-                self.overViewTable.reloadData()
-                self.refreshControl.endRefreshing()
+        self.fetchData(manager.location!.coordinate.latitude, long: manager.location!.coordinate.longitude)
+    }
+    
+    func fetchData(lat: Double, long: Double) {
+        self.getWeatherDataLocation(lat, long: long) { response, error in
+            if let data = response, locations = data.valueForKey("list") as? [NSDictionary] {
+                self.handleSuccessfulFetch(locations)
+            } else if let responseError = error {
+                self.handleFetchWithError(responseError)
             }
-            else {
-                print("No cities found: \(error!)")
-                //get old data
-                print("get old data instead")
-                let db: CityDao = CityDao()
-                if let db_Cities = db.getCites() {
-                    self.cities = db_Cities
-                }
-                self.overViewTable.reloadData()
-                self.refreshControl.endRefreshing()
-            }
-        })
+            self.overViewTable.reloadData()
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
+    func handleSuccessfulFetch(locations: [NSDictionary]) {
+        print("succesfully got new data")
+        self.cities.removeAll()
+        self.parseCityObjects(locations)
+    }
+    
+    func handleFetchWithError(error: NSError) {
+        print("No cities found: \(error)")
+        //get old data
+        print("get old data instead")
+        let db: CityDao = CityDao()
+        if let db_Cities = db.getCites() {
+            self.cities = db_Cities
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -156,29 +157,50 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         cell.dateLabel?.text = dateFormatter.stringFromDate(currentLocation.date)
-        let icon: Icon = self.getIcon(currentLocation.icon)
-        cell.cellIconView.image = UIImage(data: icon.icon)
+        self.getIcon(currentLocation.icon, completionHandler: {
+            (theIcon: Icon) in
+            cell.cellIconView.image = UIImage(data: theIcon.icon)
+        })
         return cell
     }
     
-    func getIcon(iconTitle: String) -> Icon {
-        let url: String = "http://openweathermap.org/img/w/\(iconTitle).png"
+    func getIcon(iconTitle: String, completionHandler: (theIcon: Icon) -> Void){
         let db: IconDao = IconDao()
         let icon: Icon = db.getIcon(iconTitle)!
         let imageData: NSData? = icon.icon
         if imageData?.length == 0 {
             //image not yet in DB
-            Alamofire.request(.GET, url).response {
-                (_,response,data,_) in
-                if response?.statusCode == 200 {
-                    icon.iconTitle = iconTitle
-                    icon.icon = data!
-                    db.insertIcon(icon)
-                    self.overViewTable.reloadData()
-                }
+            icon.iconTitle = iconTitle
+            self.fetchIcon(iconTitle, icon: icon, completionHandler: {
+                (fetchedIcon: Icon) in
+                completionHandler(theIcon: fetchedIcon)
+            
+            })
+        }
+        else {
+            completionHandler(theIcon: icon)
+        }
+    }
+    
+    func fetchIcon(iconTitle: String, icon: Icon, completionHandler: (fetchedIcon: Icon)->Void) {
+        let url: String = "http://openweathermap.org/img/w/\(iconTitle).png"
+        Alamofire.request(.GET, url).response {
+            (_,response,data,_) in
+            if response?.statusCode == 200 {
+                self.handleSuccessfulIconFetch(icon, data: data, completionHandler: {
+                    (fetchedIcon) in
+                    completionHandler(fetchedIcon: fetchedIcon)
+                })
+                self.overViewTable.reloadData()
             }
         }
-        return icon
+    }
+    
+    func handleSuccessfulIconFetch(icon: Icon, data: NSData?, completionHandler: (icon: Icon)->Void) {
+        icon.icon = data!
+        let db = IconDao()
+        db.insertIcon(icon)
+        completionHandler(icon: icon)
     }
     
     func refresh(sender:AnyObject) {
