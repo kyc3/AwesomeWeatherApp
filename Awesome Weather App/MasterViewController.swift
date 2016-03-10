@@ -62,33 +62,11 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
                     print("succesfully got new data")
                     self.cities.removeAll()
                     let locationArray = response.valueForKey("list")! as! NSArray
-                    for location in locationArray {
-                        let mainObject = location.valueForKey("main") as! NSDictionary
-                        let windObject = location.valueForKey("wind") as! NSDictionary
-                        let cloudObject = location.valueForKey("clouds") as! NSDictionary
-                        let weatherObject = location.valueForKey("weather")?.objectAtIndex(0) as! NSDictionary
-                        let city: City = City()
-                        city.name =  (location.valueForKey("name") as? String)!
-                        city.temperature = String(mainObject.valueForKey("temp")!)
-                        city.humidity = String(mainObject.valueForKey("humidity")!)
-                        city.pressure = String(mainObject.valueForKey("pressure")!)
-                        city.windSpeed = String(windObject.valueForKey("speed")!)
-                        city.cloudiness = String(cloudObject.valueForKey("all")!)
-                        city.weather = String(weatherObject.valueForKey("main")!)
-                        city.weatherDescription = String(weatherObject.valueForKey("description")!)
-                        city.date = NSDate(timeIntervalSince1970: Double(location.valueForKey("dt")! as! NSNumber))
-                        city.icon = String(weatherObject.valueForKey("icon")!)
-                        self.cities.append(city)
-                    }
-                    let db: CityDao = CityDao()
-                    db.insertCities(self.cities) //insert all cities into DB
-                    if let db_Cities = db.getCites() {
-                        self.cities = db_Cities
-                    }
+                    self.parseCityObjects(locationArray as! [NSDictionary])
                     /* chk all entries
                     self.cities = db.getCites()!
                     for city in self.cities {
-                    print(city.toString())
+                        print(city.toString())
                     }
                     */
                     self.overViewTable.reloadData()
@@ -111,6 +89,51 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         }
     }
     
+    func parseCityObjects(citiesRaw: [NSDictionary]) {
+        for location in citiesRaw {
+            var city: City = City()
+            let mainObject = location.valueForKey("main") as! NSDictionary
+            self.parseCityMainObject(mainObject, city: &city)
+            let windObject = location.valueForKey("wind") as! NSDictionary
+            self.parseCityWindObject(windObject, city: &city)
+            let cloudObject = location.valueForKey("clouds") as! NSDictionary
+            self.parseCityCloudObject(cloudObject, city: &city)
+            let weatherObject = location.valueForKey("weather")?.objectAtIndex(0) as! NSDictionary
+            self.parseCityWeatherObject(weatherObject, city: &city)
+            city.name =  (location.valueForKey("name") as? String)!
+            city.date = NSDate(timeIntervalSince1970: Double(location.valueForKey("dt")! as! NSNumber))
+            self.cities.append(city)
+        }
+        self.insertCitiesIntoDB()
+    }
+    
+    func insertCitiesIntoDB() {
+        let db: CityDao = CityDao()
+        db.insertCities(self.cities) //insert all cities into DB
+        if let db_Cities = db.getCites() {
+            self.cities = db_Cities
+        }
+    }
+    
+    func parseCityMainObject(mainRaw: NSDictionary, inout city: City) {
+        city.temperature = String(mainRaw.valueForKey("temp")!)
+        city.humidity = String(mainRaw.valueForKey("humidity")!)
+        city.pressure = String(mainRaw.valueForKey("pressure")!)
+    }
+    func parseCityWindObject(windRaw: NSDictionary, inout city: City) {
+        city.windSpeed = String(windRaw.valueForKey("speed")!)
+    }
+    
+    func parseCityCloudObject(cloudRaw: NSDictionary, inout city: City) {
+        city.cloudiness = String(cloudRaw.valueForKey("all")!)
+    }
+    
+    func parseCityWeatherObject(weatherRaw: NSDictionary, inout city: City) {
+        city.weather = String(weatherRaw.valueForKey("main")!)
+        city.weatherDescription = String(weatherRaw.valueForKey("description")!)
+        city.icon = String(weatherRaw.valueForKey("icon")!)
+    }
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         manager.stopUpdatingLocation()
         self.getWeatherDataToLocation(manager.location!.coordinate.latitude, lon: manager.location!.coordinate.longitude)
@@ -130,34 +153,29 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
         dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         cell.dateLabel?.text = dateFormatter.stringFromDate(currentLocation.date)
-        let url: String = "http://openweathermap.org/img/w/\(currentLocation.icon).png"
+        let icon: Icon = self.getIcon(currentLocation.icon)
+        cell.cellIconView.image = UIImage(data: icon.icon)
+        return cell
+    }
+    
+    func getIcon(iconTitle: String) -> Icon {
+        let url: String = "http://openweathermap.org/img/w/\(iconTitle).png"
         let db: IconDao = IconDao()
-        let icon: Icon = db.getIcon(currentLocation.icon)!
+        let icon: Icon = db.getIcon(iconTitle)!
         let imageData: NSData? = icon.icon
-        if imageData?.length > 0 {
-            //image already in DB
-            let image = UIImage(data: imageData! as NSData)
-            cell.cellIconView.image = image
-        }
-        else {
+        if imageData?.length == 0 {
             //image not yet in DB
             Alamofire.request(.GET, url).response {
                 (_,response,data,_) in
                 if response?.statusCode == 200 {
-                    let icon: Icon = Icon()
-                    icon.iconTitle = currentLocation.icon
-                    let image = UIImage(data: data! as NSData)
-                    cell.cellIconView.image = image
+                    icon.iconTitle = iconTitle
                     icon.icon = data!
                     db.insertIcon(icon)
+                    self.overViewTable.reloadData()
                 }
             }
         }
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        return icon
     }
     
     func refresh(sender:AnyObject) {
