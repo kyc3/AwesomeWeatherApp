@@ -9,24 +9,25 @@
 import Foundation
 import SQLite
 
-class CityDao: NSObject {
-    static let id:String = "id"
-    static let name: String = "name"
-    static let temperature: String = "temperature"
-    static let humidity: String = "humidity"
-    static let pressure: String = "pressure"
-    static let windspeed: String = "windspeed"
-    static let weather: String = "weather"
-    static let weatherDescription: String = "weatherDescription"
-    static let cloudiness: String = "cloudiness"
-    static let date: String = "date"
-    static let icon: String = "icon"
+class CityDao: EURODB {
+    private let tableName = "cities"
+    private let id:String = "id"
+    private let name: String = "name"
+    private let temperature: String = "temperature"
+    private let humidity: String = "humidity"
+    private let pressure: String = "pressure"
+    private let windspeed: String = "windspeed"
+    private let weather: String = "weather"
+    private let weatherDescription: String = "weatherDescription"
+    private let cloudiness: String = "cloudiness"
+    private let date: String = "date"
+    private let icon: String = "icon"
     
     func insertCities(cities: [City]) {
         //empty the db
-        let db = DB.sharedInstance.connection!
+        let db = super.connection!
         do {
-            try db.execute("DELETE FROM cities")
+            try db.execute(EURODB.deleteAll(self.tableName))
         }
         catch{
             print("error in delete")
@@ -38,21 +39,28 @@ class CityDao: NSObject {
     }
     
     func insert(city: City) {
-        do {
-            let db = DB.sharedInstance.connection!
-            let stmt = try db.prepare("INSERT INTO cities (\(CityDao.name),\(CityDao.temperature),\(CityDao.humidity),\(CityDao.pressure),\(CityDao.windspeed),\(CityDao.weather),\(CityDao.weatherDescription),\(CityDao.cloudiness),\(CityDao.date),\(CityDao.icon)) VALUES (?,?,?,?,?,?,?,?,?,?)")
-            try stmt.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970),city.icon)
+        //let db = super.connection!
+        let columns = [self.name,self.temperature,self.humidity,self.pressure,self.windspeed,self.weather,self.weatherDescription,self.cloudiness,self.date,self.icon]
+        let stmt: Statement? = super.insert(self.tableName, columns: columns)
+        if stmt != nil {
+            do {
+                try stmt!.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970),city.icon)
+            }
+            catch {
+                print("Error inserting city object: \(error)")
+            }
         }
-        catch {
-            print("Error inserting city object: \(error)")
+        else {
+            print("statement was nil")
         }
     }
     
     func getCites() ->[City]? {
         do {
-            let db = DB.sharedInstance.connection!
+            let db = super.connection!
             var cities: [City] = [City]()
-            for row in try db.prepare("SELECT \(CityDao.id),\(CityDao.name),\(CityDao.temperature),\(CityDao.humidity),\(CityDao.pressure),\(CityDao.cloudiness),\(CityDao.weather),\(CityDao.weatherDescription),\(CityDao.windspeed),\(CityDao.date),\(CityDao.icon) FROM cities") {
+            let columns = [self.id,self.name,self.temperature,self.humidity,self.pressure,self.windspeed,self.weather,self.weatherDescription,self.cloudiness,self.date,self.icon]
+            for row in try db.prepare(EURODB.selectWithoutCondition(self.tableName, columns: columns)) {
                 let city: City = City()
                 city.name = String(row[1]!)
                 city.temperature = String(row[2]!)
