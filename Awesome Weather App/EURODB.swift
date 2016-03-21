@@ -69,15 +69,8 @@ class EURODB {
         return "\(self.createSelectPartOfStatement(tableName, columns: columns))\(self.createConditionPartOfStatement(columns, values: values))"
     }
     
-    internal func insert(tableName: String, columns: Array<String>) -> Statement? {
-        do {
-            let statement = EURODB.createInsertStatement(tableName, columns: columns)
-            return try self.connection!.prepare(statement)
-        }
-        catch {
-            print("Errrrror: \(error)")
-            return nil
-        }
+    internal static func insert(tableName: String, columns: Array<String>) -> String {
+        return self.createInsertStatement(tableName, columns: columns)
     }
     
     internal static func deleteAll(tableName: String) -> String {
@@ -88,9 +81,13 @@ class EURODB {
         return "\(self.createDeleteStatement(tableName))\(self.createConditionPartOfStatement(columns, values: values))"
     }
     
-    /*internal static func updateAll(tableName: String, updateColumns: Array<String>, updateValues: Array<String>?) -> String {
-        
-    }*/
+    internal static func updateAll(tableName: String, updateColumns: Array<String>) -> String {
+        return self.createUpdatePartOfStatement(tableName, columns: updateColumns)
+    }
+    
+    internal static func updateWithCondition(tableName: String, updateColumns:Array<String>, conditionColumns: Array<String>, conditionValues: Array<String>) -> String {
+        return "\(self.createUpdatePartOfStatement(tableName, columns: updateColumns))\(self.createConditionPartOfStatement(conditionColumns, values: conditionValues))"
+    }
     
     // MARK: - Helper functions to build the query
     
@@ -98,7 +95,7 @@ class EURODB {
         var insertStatement = "INSERT INTO \(tableName)"
         var columnPart = "("
         var valuePart = "("
-        for var i = 0;i<columns.count;++i {
+        for i in 0..<columns.count {
             columnPart = "\(columnPart)\(columns[i])"
             valuePart = "\(valuePart)?"
             if i != columns.count-1 {
@@ -155,4 +152,14 @@ class EURODB {
         return conditionPart
     }
     
+    internal static func createUpdatePartOfStatement(tableName: String, columns: Array<String>) -> String {
+        var statement = "UPDATE \(tableName) SET "
+        for i in 0..<columns.count {
+            statement = "\(statement)\(columns[i])=?"
+            if i != columns.count-1 {
+                statement = "\(statement),"
+            }
+        }
+        return statement
+    }
 }

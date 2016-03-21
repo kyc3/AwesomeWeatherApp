@@ -11,6 +11,7 @@ import SQLite
 
 
 class City: NSObject {
+    var id: String = ""
     var name: String = ""
     var temperature: String = ""
     var humidity: String = ""

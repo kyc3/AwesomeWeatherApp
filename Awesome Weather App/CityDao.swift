@@ -10,6 +10,7 @@ import Foundation
 import SQLite
 
 class CityDao: EURODB {
+    static let sharedInstance = CityDao()
     private let tableName = "cities"
     private let id:String = "id"
     private let name: String = "name"
@@ -23,7 +24,7 @@ class CityDao: EURODB {
     private let date: String = "date"
     private let icon: String = "icon"
     
-    func insertCities(cities: [City]) {
+    func insertCities(cities: [City]) throws {
         //empty the db
         let db = super.connection!
         do {
@@ -34,54 +35,44 @@ class CityDao: EURODB {
         }
         //insert new entries
         for city in cities {
-            self.insert(city)
+            try self.insert(city)
         }
     }
     
-    func insert(city: City) {
-        //let db = super.connection!
-        let columns = [self.name,self.temperature,self.humidity,self.pressure,self.windspeed,self.weather,self.weatherDescription,self.cloudiness,self.date,self.icon]
-        let stmt: Statement? = super.insert(self.tableName, columns: columns)
-        if stmt != nil {
-            do {
-                try stmt!.run(city.name,city.temperature,city.humidity,city.pressure,city.windSpeed,city.weather,city.weatherDescription,city.cloudiness,String(city.date.timeIntervalSince1970),city.icon)
-            }
-            catch {
-                print("Error inserting city object: \(error)")
-            }
-        }
-        else {
-            print("statement was nil")
-        }
-    }
-    
-    func getCites() ->[City]? {
-        do {
-            let db = super.connection!
-            var cities: [City] = [City]()
-            let columns = [self.id,self.name,self.temperature,self.humidity,self.pressure,self.windspeed,self.weather,self.weatherDescription,self.cloudiness,self.date,self.icon]
-            for row in try db.prepare(EURODB.selectWithoutCondition(self.tableName, columns: columns)) {
-                let city: City = City()
-                city.name = String(row[1]!)
-                city.temperature = String(row[2]!)
-                city.humidity = String(row[3]!)
-                city.pressure = String(row[4]!)
-                city.cloudiness = String(row[5]!)
-                city.weather = String(row[6]!)
-                city.weatherDescription = String(row[7]!)
-                city.windSpeed = String(row[8]!)
-                let dt = String(row[9]!)
-                city.date = NSDate(timeIntervalSince1970: Double(dt)!)
-                city.icon = String(row[10]!)
-                cities.append(city)
-            }
-            return cities
-        }
-        catch {
-            print("cities could not be retrieved")
-            return nil
-        }
+    func insert(city: City) throws {
+        let db = super.connection!
+        let columns = [self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
+        let stmt = try db.prepare(EURODB.insert(self.tableName, columns: columns))
+        try stmt.run(city.name, city.temperature, city.humidity, city.pressure, city.windSpeed, city.weather, city.weatherDescription, city.cloudiness, String(city.date.timeIntervalSince1970), city.icon)
     }
 
-    
+    func getCites() throws ->[City]? {
+        let db = super.connection!
+        var cities: [City] = [City]()
+        let columns = [self.id, self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
+        for row in try db.prepare(EURODB.selectWithoutCondition(self.tableName, columns: columns)) {
+            let city: City = City()
+            city.id = String(row[0]!)
+            city.name = String(row[1]!)
+            city.temperature = String(row[2]!)
+            city.humidity = String(row[3]!)
+            city.pressure = String(row[4]!)
+            city.cloudiness = String(row[5]!)
+            city.weather = String(row[6]!)
+            city.weatherDescription = String(row[7]!)
+            city.windSpeed = String(row[8]!)
+            let dt = String(row[9]!)
+            city.date = NSDate(timeIntervalSince1970: Double(dt)!)
+            city.icon = String(row[10]!)
+            cities.append(city)
+        }
+        return cities
+    }
+
+    func updateCity(city: City) throws {
+        let db = super.connection!
+        let columns = [self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
+        let stmt = try db.prepare(EURODB.updateWithCondition(self.tableName, updateColumns: columns, conditionColumns: [self.id], conditionValues: [city.id]))
+        try stmt.run(city.name, city.temperature, city.humidity, city.pressure, city.windSpeed, city.weather, city.weatherDescription, city.cloudiness, String(city.date.timeIntervalSince1970), city.icon)
+    }
 }

@@ -84,10 +84,15 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
     }
     
     func insertCitiesIntoDB() {
-        let db: CityDao = CityDao()
-        db.insertCities(self.cities) //insert all cities into DB
-        if let db_Cities = db.getCites() {
-            self.cities = db_Cities
+        let db: CityDao = CityDao.sharedInstance
+        do {
+            try db.insertCities(self.cities) //insert all cities into DB
+            if let db_Cities =  try db.getCites() {
+                self.cities = db_Cities
+            }
+        }
+        catch {
+            print("Couldn't insert: \(error)")
         }
     }
     
@@ -137,10 +142,17 @@ class MasterViewController: UIViewController, UITableViewDelegate,UITableViewDat
         print("No cities found: \(error)")
         //get old data
         print("get old data instead")
-        let db: CityDao = CityDao()
-        if let db_Cities = db.getCites() {
-            self.cities = db_Cities
+        do {
+            let db: CityDao = CityDao.sharedInstance
+            if let db_Cities = try db.getCites() {
+                self.cities = db_Cities
+                
+            }
         }
+        catch {
+            print("Error getting cities: \(error)")
+        }
+        
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
