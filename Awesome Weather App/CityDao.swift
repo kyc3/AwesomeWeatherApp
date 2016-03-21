@@ -23,16 +23,21 @@ class CityDao: EURODB {
     private let cloudiness: String = "cloudiness"
     private let date: String = "date"
     private let icon: String = "icon"
+    private lazy var columnsWithId: Array<String> = {
+        [unowned self] in
+        return [self.id, self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
+    }()
+    private lazy var columnsWithoutId: Array<String> = {
+        [unowned self] in
+        return [self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
+    }()
     
     func insertCities(cities: [City]) throws {
         //empty the db
-        let db = super.connection!
-        do {
-            try db.execute(EURODB.deleteAll(self.tableName))
+        guard let db = super.connection else {
+            throw EURODB.DBError.NO_CONNECTION("No Connection to DB")
         }
-        catch{
-            print("error in delete")
-        }
+        try db.execute(EURODB.deleteAll(self.tableName))
         //insert new entries
         for city in cities {
             try self.insert(city)
@@ -40,17 +45,19 @@ class CityDao: EURODB {
     }
     
     func insert(city: City) throws {
-        let db = super.connection!
-        let columns = [self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
-        let stmt = try db.prepare(EURODB.insert(self.tableName, columns: columns))
+        guard let db = super.connection else {
+            throw EURODB.DBError.NO_CONNECTION("No Connection to DB")
+        }
+        let stmt = try db.prepare(EURODB.insert(self.tableName, columns: self.columnsWithoutId))
         try stmt.run(city.name, city.temperature, city.humidity, city.pressure, city.windSpeed, city.weather, city.weatherDescription, city.cloudiness, String(city.date.timeIntervalSince1970), city.icon)
     }
 
     func getCites() throws ->[City]? {
-        let db = super.connection!
+        guard let db = super.connection else {
+            throw EURODB.DBError.NO_CONNECTION("No Connection to DB")
+        }
         var cities: [City] = [City]()
-        let columns = [self.id, self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
-        for row in try db.prepare(EURODB.selectWithoutCondition(self.tableName, columns: columns)) {
+        for row in try db.prepare(EURODB.selectWithoutCondition(self.tableName, columns: self.columnsWithId)) {
             let city: City = City()
             city.id = String(row[0]!)
             city.name = String(row[1]!)
@@ -70,9 +77,10 @@ class CityDao: EURODB {
     }
 
     func updateCity(city: City) throws {
-        let db = super.connection!
-        let columns = [self.name, self.temperature, self.humidity, self.pressure, self.windspeed, self.weather, self.weatherDescription, self.cloudiness, self.date, self.icon]
-        let stmt = try db.prepare(EURODB.updateWithCondition(self.tableName, updateColumns: columns, conditionColumns: [self.id], conditionValues: [city.id]))
+        guard let db = super.connection else {
+            throw EURODB.DBError.NO_CONNECTION("No Connection to DB")
+        }
+        let stmt = try db.prepare(EURODB.updateWithCondition(self.tableName, updateColumns: self.columnsWithoutId, conditionColumns: [self.id], conditionValues: [city.id]))
         try stmt.run(city.name, city.temperature, city.humidity, city.pressure, city.windSpeed, city.weather, city.weatherDescription, city.cloudiness, String(city.date.timeIntervalSince1970), city.icon)
     }
 }

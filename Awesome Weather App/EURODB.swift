@@ -10,6 +10,9 @@ import Foundation
 import SQLite
 
 class EURODB {
+    enum DBError: ErrorType {
+        case NO_CONNECTION(String)
+    }
     internal var connection: Connection?
     private let filePath: String
     private let fileName: String = "cities.sqlite"
